@@ -25,13 +25,7 @@ A minimalistic, fully functional Library Management System built with Flask and 
    cd Ahnf
    ```
 
-2. **Create a virtual environment (optional but recommended)**:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. **Install dependencies**:
+2. **Install dependencies**:
    ```bash
    pip install -r py/requirements.txt
    ```
@@ -70,3 +64,4 @@ ER diagram:
 ![ER Diagram](Docs/ER.png)
 
 Flowchart: 
+
