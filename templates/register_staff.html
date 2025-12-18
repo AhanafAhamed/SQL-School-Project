@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Register Staff - Library Management System{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 500px; margin: 0 auto;">
+    <h2>Register New Staff</h2>
+    <form method="POST">
+        <div style="margin-bottom: 1rem;">
+            <label style="display: block;">Full Name</label>
+            <input type="text" name="name" required placeholder="Enter full name"
+                style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--fg);">
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <label style="display: block;">Username</label>
+            <input type="text" name="username" required placeholder="Choose a username"
+                style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--fg);">
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <label style="display: block;">Password</label>
+            <input type="password" name="password" required placeholder="Create a password"
+                style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--fg);">
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <label style="display: block;">Role</label>
+            <select name="role"
+                style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--fg);">
+                <option value="Staff">Staff</option>
+                <option value="Admin">Admin</option>
+            </select>
+        </div>
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn" style="flex: 1;">Create Account</button>
+            <a href="/" class="btn"
+                style="background: #6c757d; text-align: center; text-decoration: none; flex: 1;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Books - Library Management System{% endblock %}
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h2>Books</h2>
+        <a href="/books/add" class="btn">+ Add New Book</a>
+    </div>
+
+    <form method="GET" style="margin-bottom: 1rem; display: flex; gap: 0.5rem;">
+        <input type="text" name="search" placeholder="Search by title or ISBN..."
+            value="{{ request.args.get('search', '') }}"
+            style="flex: 1; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--fg);">
+        <button type="submit" class="btn btn-secondary" style="background: #6c757d;">Search</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>ISBN</th>
+                <th>Availability</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <td>{{ book.title }}</td>
+                <td>{{ book.author_name if book.author_name else 'Unknown' }}</td>
+                <td>{{ book.category_name if book.category_name else 'Unknown' }}</td>
+                <td>{{ book.isbn }}</td>
+                <td>{{ book.total_available }} / {{ book.total_stock }}</td>
+                <td>
+                    <div class="actions-cell">
+                        <a href="/books/edit/{{ book.book_id }}"
+                            style="color: var(--accent); text-decoration: none; font-size: 0.9rem;">Edit</a>
+                        <form action="/books/delete/{{ book.book_id }}" method="POST"
+                            onsubmit="return confirm('Delete this book?')">
+                            <button type="submit"
+                                style="background: none; border: none; color: #dc3545; padding: 0; font-size: 0.9rem; cursor: pointer;">Delete</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

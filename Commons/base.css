@@ -1,0 +1,150 @@
+:root {
+    --bg: #f8f9fa;
+    --fg: #212529;
+    --accent: #007bff;
+    --card: #ffffff;
+    --border: #dee2e6;
+    --alert-bg: #e2e3e5;
+    --alert-fg: #383d41;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #121212;
+        --fg: #e9ecef;
+        --accent: #2197db;
+        --card: #1e1e1e;
+        --border: #333;
+        --alert-bg: #333;
+        --alert-fg: #fff;
+    }
+}
+
+.actions-cell {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.actions-cell form {
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+
+
+.alert {
+    background: var(--alert-bg);
+    color: var(--alert-fg);
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alert-close {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1.25rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 0.5rem;
+    opacity: 0.5;
+}
+
+.alert-close:hover {
+    opacity: 1;
+}
+
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    padding: 1rem 2rem;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav a {
+    margin-left: 1rem;
+    text-decoration: none;
+    color: var(--fg);
+    font-weight: 500;
+}
+
+main {
+    flex: 1;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.card {
+    background: var(--card);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+h1,
+h2 {
+    margin-top: 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+th,
+td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+button,
+.btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font: inherit;
+}
+
+button:hover {
+    filter: brightness(1.1);
+}

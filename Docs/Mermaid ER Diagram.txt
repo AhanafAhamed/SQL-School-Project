@@ -1,0 +1,48 @@
+erDiagram
+    authors {
+        string author_id PK
+        string author_name
+    }
+    categories {
+        string category_id PK
+        string category_name
+    }
+    books {
+        string book_id PK
+        string title
+        string category_id FK
+        string author_id FK
+        int published_year
+        string isbn
+        int total_stock
+        int total_available
+        int total_loaned
+    }
+    members {
+        string member_id PK
+        string member_name
+        string email
+        string phone
+    }
+    staff {
+        string staff_id PK
+        string name
+        string username
+        string password
+        string role
+    }
+    loans {
+        string loan_id PK
+        date loan_date
+        date due_date
+        date return_date
+        string staff_id FK
+        string book_id FK
+        string member_id FK
+    }
+
+    authors ||--o{ books : "writes"
+    categories ||--o{ books : "categorizes"
+    books ||--o{ loans : "is lent in"
+    members ||--o{ loans : "borrows"
+    staff ||--o{ loans : "issues/manages"

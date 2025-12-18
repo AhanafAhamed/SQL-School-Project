@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}{{ "Edit" if book else "Add" }} Book - Library Management System{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <h2>{{ "Edit" if book else "Add New" }} Book</h2>
+    <form method="POST">
+        <div style="margin-bottom: 1rem;">
+            <label style="display: block;">Title</label>
+            <input type="text" name="title" value="{{ book.title if book else '' }}" required
+                style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--fg);">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <div>
+                <label style="display: block;">Author</label>
+                <select name="author_id" required
+                    style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--fg);">
+                    {% for author in authors %}
+                    <option value="{{ author.author_id }}" {{ 'selected' if book and book.author_id==author.author_id
+                        else '' }}>{{ author.author_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label style="display: block;">Category</label>
+                <select name="category_id" required
+                    style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--fg);">
+                    {% for cat in categories %}
+                    <option value="{{ cat.category_id }}" {{ 'selected' if book and book.category_id==cat.category_id
+                        else '' }}>{{ cat.category_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <div>
+                <label style="display: block;">ISBN</label>
+                <input type="text" name="isbn" value="{{ book.isbn if book else '' }}"
+                    style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--fg);">
+            </div>
+            <div>
+                <label style="display: block;">Published Year</label>
+                <input type="number" name="published_year" value="{{ book.published_year if book else '' }}"
+                    style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--fg);">
+            </div>
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <label style="display: block;">Total Stock Copies</label>
+            <input type="number" name="total_stock" value="{{ book.total_stock if book else '0' }}" required
+                style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--fg);">
+            {% if book %}
+            <p style="font-size: 0.85rem; margin-top: 0.25rem; opacity: 0.7;">Current Available: {{ book.total_available
+                }} / {{ book.total_stock }} ({{ book.total_loaned }} active loans)</p>
+            {% endif %}
+        </div>
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn" style="flex: 1;">Save Book</button>
+            <a href="/books" class="btn"
+                style="background: #6c757d; text-align: center; text-decoration: none; flex: 1;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

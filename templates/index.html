@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Library Management System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>Welcome to Library Management System</h1>
+    <p>Manage your books, members, and loans efficiently.</p>
+
+    <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem;">
+        <div class="card" style="text-align: center;">
+            <h3>Books</h3>
+            <p style="font-size: 2rem; font-weight: bold;">{{ book_count }}</p>
+            <a href="/books" class="btn">View All</a>
+        </div>
+        <div class="card" style="text-align: center;">
+            <h3>Members</h3>
+            <p style="font-size: 2rem; font-weight: bold;">{{ member_count }}</p>
+            <a href="/members" class="btn">View All</a>
+        </div>
+        <div class="card" style="text-align: center;">
+            <h3>Active Loans</h3>
+            <p style="font-size: 2rem; font-weight: bold;">{{ loan_count }}</p>
+            <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                <a href="/loans" class="btn">View All</a>
+                <a href="/reports/overdue" class="btn" style="background: #dc3545;">Overdue</a>
+            </div>
+        </div>
+    </div>
+    <div style="margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 2rem;">
+        <h3>Most Popular Books</h3>
+        <ul style="list-style: none; padding: 0; margin-top: 1rem; display: grid; gap: 1rem;">
+            {% for book in popular_books %}
+            <li class="card"
+                style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; margin: 0;">
+                <span style="font-weight: 500;">{{ book[0] }}</span>
+                <span
+                    style="font-size: 0.85rem; padding: 0.25rem 0.5rem; background: var(--accent); color: white; border-radius: 12px;">{{
+                    book[1] }} Loans</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
+```

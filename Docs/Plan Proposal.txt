@@ -1,0 +1,22 @@
+Project Overview:
+This project involves building a database to  be used in libraries. The system will allow us to add and manage books, authors, genres, members, and loan records. It will also let us keep track of books which have been borrowed or returned while also keeping track of available copies. A simple front-end interface will be created using HTML, CSS, and JavaScript that will make it easy for users to perform data input, display, and interactions 
+
+Project Objectives:
+•	Design a normalized relational database with at least five interconnected tables.
+•	Implement a functional front-end for CRUD operations on all major entities.
+•	Demonstrate SQL features such as joins, subqueries, aggregates, views, and user access control.
+•	Provide search and filtering capabilities for books, members, and loans.
+•	Track active loans, overdue books, and book availability.
+
+
+
+Functionalities:
+•	Add, edit, and delete books, members, authors, and categories.
+•	Issue and return books while automatically updating available copies.
+•	Search and filter books by title, author, category, or availability.
+•	Track active loans, overdue books, and member borrowing history.
+•	Staff login system with controlled access for issuing and returning books.
+
+
+Expected Outcomes:
+A fully functional library management system that allows users to manage books, members, and loans efficiently through a user-friendly interface. The system will demonstrate proper database design, SQL operations, joins, subqueries, views, and user access control as required.

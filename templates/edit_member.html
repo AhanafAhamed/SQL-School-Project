@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ "Edit" if member else "Add" }} Member - Library Management System{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <h2>{{ "Edit" if member else "Add New" }} Member</h2>
+    <form method="POST">
+        <div style="margin-bottom: 1rem;">
+            <label style="display: block;">Full Name</label>
+            <input type="text" name="member_name" value="{{ member.member_name if member else '' }}" required
+                style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--fg);">
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <label style="display: block;">Email</label>
+            <input type="email" name="email" value="{{ member.email if member else '' }}" required
+                style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--fg);">
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <label style="display: block;">Phone</label>
+            <input type="text" name="phone" value="{{ member.phone if member else '' }}"
+                style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--fg);">
+        </div>
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn" style="flex: 1;">Save Member</button>
+            <a href="/members" class="btn"
+                style="background: #6c757d; text-align: center; text-decoration: none; flex: 1;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

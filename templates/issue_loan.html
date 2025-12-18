@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Issue Book - Library Management System{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <h2>Issue Book</h2>
+    <div
+        style="margin-bottom: 2rem; padding: 1rem; border: 1px dashed var(--border); border-radius: 8px; font-size: 0.9rem;">
+        <span style="opacity: 0.7;">Librarian:</span> <strong>{{ session.staff_name }}</strong>
+        <span style="opacity: 0.7; font-size: 0.8rem; margin-left: 0.5rem;">(Automatic Attribution)</span>
+    </div>
+    <form method="POST">
+        <div style="margin-bottom: 1rem;">
+            <label style="display: block;">Select Book</label>
+            <select name="book_id" required
+                style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--fg);">
+                {% for book in books %}
+                <option value="{{ book.book_id }}">{{ book.title }} ({{ book.total_available }} available)</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <label style="display: block;">Select Member</label>
+            <select name="member_id" required
+                style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--fg);">
+                {% for member in members %}
+                <option value="{{ member.member_id }}">{{ member.member_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <label style="display: block;">Due Date</label>
+            <input type="date" name="due_date" required
+                style="width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--fg);">
+        </div>
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn" style="flex: 1;">Issue Book</button>
+            <a href="/loans" class="btn"
+                style="background: #6c757d; text-align: center; text-decoration: none; flex: 1;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
