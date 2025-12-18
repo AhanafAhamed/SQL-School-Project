@@ -18,9 +18,12 @@ def create_app():
     
     db.init_app(app)
     
+    templates_path = os.path.abspath(os.path.join(app.root_path, '..', 'templates'))
+    commons_path = os.path.abspath(os.path.join(app.root_path, '..', 'Commons'))
+    
     app.jinja_loader = ChoiceLoader([
-        FileSystemLoader('../templates'),
-        FileSystemLoader('../Commons')
+        FileSystemLoader(templates_path),
+        FileSystemLoader(commons_path)
     ])
     
     app.register_blueprint(main)
