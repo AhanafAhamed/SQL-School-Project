@@ -39,7 +39,7 @@ $authors = $conn->query("SELECT * FROM authors ORDER BY author_name");
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem;">
         <?php while($author = $authors->fetch_assoc()): ?>
         <div class="card" style="margin: 0; padding: 1.25rem; display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-weight: 500; font-size: 1.1rem;"><?php echo htmlspecialchars($author['author_name']); ?></span>
+            <a href="author_stats.php?id=<?php echo $author['author_id']; ?>" style="font-weight: 500; font-size: 1.1rem; color: var(--accent); text-decoration: none;"><?php echo htmlspecialchars($author['author_name']); ?></a>
             <form action="delete_author.php" method="POST" onsubmit="return confirm('Delete this author?')">
                 <input type="hidden" name="id" value="<?php echo $author['author_id']; ?>">
                 <button type="submit" style="background: none; border: none; color: #dc3545; cursor: pointer; font-size: 0.9rem;">Delete</button>

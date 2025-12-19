@@ -20,8 +20,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $conn->begin_transaction();
     try {
         // Check availability
-        $res = $conn->query("SELECT total_available FROM books WHERE book_id = '$book_id'");
-        $book = $res->fetch_assoc();
+        $check_stmt = $conn->prepare("SELECT total_available FROM books WHERE book_id = ?");
+        $check_stmt->bind_param("s", $book_id);
+        $check_stmt->execute();
+        $book = $check_stmt->get_result()->fetch_assoc();
 
         if ($book && $book['total_available'] > 0) {
             // Insert loan
@@ -30,7 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->execute();
 
             // Update inventory
-            $conn->query("UPDATE books SET total_available = total_available - 1, total_loaned = total_loaned + 1 WHERE book_id = '$book_id'");
+            $update_stmt = $conn->prepare("UPDATE books SET total_available = total_available - 1, total_loaned = total_loaned + 1 WHERE book_id = ?");
+            $update_stmt->bind_param("s", $book_id);
+            $update_stmt->execute();
 
             $conn->commit();
             $_SESSION['flash'] = ["Book issued successfully!"];

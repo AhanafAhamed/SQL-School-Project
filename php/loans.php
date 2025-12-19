@@ -9,9 +9,96 @@ if (!isset($_SESSION['staff_id'])) {
 }
 
 $today = date('Y-m-d');
-$query = "SELECT * FROM loan_details_view ORDER BY return_date IS NULL DESC, due_date ASC";
-$result = $conn->query($query);
+
+// Filter parameters
+$due_start = $_GET['due_start'] ?? '';
+$due_end = $_GET['due_end'] ?? '';
+$return_start = $_GET['return_start'] ?? '';
+$return_end = $_GET['return_end'] ?? '';
+$status = $_GET['status'] ?? '';
+
+// Build dynamic query
+$query = "SELECT * FROM loan_details_view WHERE 1=1";
+$params = [];
+$types = "";
+
+if ($due_start) {
+    $query .= " AND due_date >= ?";
+    $params[] = $due_start;
+    $types .= "s";
+}
+if ($due_end) {
+    $query .= " AND due_date <= ?";
+    $params[] = $due_end;
+    $types .= "s";
+}
+if ($return_start) {
+    $query .= " AND return_date >= ?";
+    $params[] = $return_start;
+    $types .= "s";
+}
+if ($return_end) {
+    $query .= " AND return_date <= ?";
+    $params[] = $return_end;
+    $types .= "s";
+}
+
+if ($status === 'active') {
+    $query .= " AND return_date IS NULL AND due_date >= ?";
+    $params[] = $today;
+    $types .= "s";
+} elseif ($status === 'overdue') {
+    $query .= " AND return_date IS NULL AND due_date < ?";
+    $params[] = $today;
+    $types .= "s";
+} elseif ($status === 'returned') {
+    $query .= " AND return_date IS NOT NULL";
+}
+
+$query .= " ORDER BY return_date IS NULL DESC, due_date ASC";
+
+$stmt = $conn->prepare($query);
+if ($types) {
+    $stmt->bind_param($types, ...$params);
+}
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
+
+<div class="card" style="margin-bottom: 2rem;">
+    <h3 style="margin-bottom: 1rem;">Filter Loans</h3>
+    <form method="GET" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: end;">
+        <div>
+            <label style="display: block; font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.4rem;">Due Date From</label>
+            <input type="date" name="due_start" value="<?php echo htmlspecialchars($due_start); ?>" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 6px;">
+        </div>
+        <div>
+            <label style="display: block; font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.4rem;">Due Date To</label>
+            <input type="date" name="due_end" value="<?php echo htmlspecialchars($due_end); ?>" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 6px;">
+        </div>
+        <div>
+            <label style="display: block; font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.4rem;">Returned From</label>
+            <input type="date" name="return_start" value="<?php echo htmlspecialchars($return_start); ?>" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 6px;">
+        </div>
+        <div>
+            <label style="display: block; font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.4rem;">Returned To</label>
+            <input type="date" name="return_end" value="<?php echo htmlspecialchars($return_end); ?>" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 6px;">
+        </div>
+        <div>
+            <label style="display: block; font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.4rem;">Status</label>
+            <select name="status" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 6px;">
+                <option value="">All Statuses</option>
+                <option value="active" <?php echo $status == 'active' ? 'selected' : ''; ?>>Active (In Progress)</option>
+                <option value="overdue" <?php echo $status == 'overdue' ? 'selected' : ''; ?>>Overdue</option>
+                <option value="returned" <?php echo $status == 'returned' ? 'selected' : ''; ?>>Returned</option>
+            </select>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+            <button type="submit" class="btn" style="flex: 1;">Filter</button>
+            <a href="loans.php" class="btn" style="background: var(--border); color: var(--text); flex: 1; text-align: center; text-decoration: none;">Clear</a>
+        </div>
+    </form>
+</div>
 
 <div class="card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">

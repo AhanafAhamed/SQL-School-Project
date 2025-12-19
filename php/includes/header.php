@@ -3,6 +3,22 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/db.php'; // Ensure DB connection is available
+
+// Global Session Validation: If staff is logged in, verify they still exist in DB
+// (Protects against session mismatch after DB resets/re-seeds)
+if (isset($_SESSION['staff_id'])) {
+    $sid = $_SESSION['staff_id'];
+    $check_stmt = $conn->prepare("SELECT staff_id FROM staff WHERE staff_id = ?");
+    $check_stmt->bind_param("s", $sid);
+    $check_stmt->execute();
+    if ($check_stmt->get_result()->num_rows === 0) {
+        session_unset();
+        session_destroy();
+        header("Location: login.php");
+        exit();
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
