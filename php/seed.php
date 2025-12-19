@@ -122,7 +122,7 @@ try {
 
         "DROP VIEW IF EXISTS book_details_view;",
         "CREATE VIEW book_details_view AS
-        SELECT b.book_id, b.title, a.author_name, c.category_name, b.isbn, b.total_stock, b.total_available
+        SELECT b.book_id, b.title, b.author_id, a.author_name, b.category_id, c.category_name, b.isbn, b.total_stock, b.total_available
         FROM books b
         LEFT JOIN authors a ON b.author_id = a.author_id
         LEFT JOIN categories c ON b.category_id = c.category_id;",
