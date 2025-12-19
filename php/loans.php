@@ -17,6 +17,9 @@ $return_start = $_GET['return_start'] ?? '';
 $return_end = $_GET['return_end'] ?? '';
 $status = $_GET['status'] ?? '';
 
+// Check if any filter is active
+$is_filtering = !empty($due_start) || !empty($due_end) || !empty($return_start) || !empty($return_end) || !empty($status);
+
 // Build dynamic query
 $query = "SELECT * FROM loan_details_view WHERE 1=1";
 $params = [];
@@ -66,39 +69,51 @@ $result = $stmt->get_result();
 ?>
 
 <div class="card" style="margin-bottom: 2rem;">
-    <h3 style="margin-bottom: 1rem;">Filter Loans</h3>
-    <form method="GET" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: end;">
-        <div>
-            <label style="display: block; font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.4rem;">Due Date From</label>
-            <input type="date" name="due_start" value="<?php echo htmlspecialchars($due_start); ?>" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 6px;">
-        </div>
-        <div>
-            <label style="display: block; font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.4rem;">Due Date To</label>
-            <input type="date" name="due_end" value="<?php echo htmlspecialchars($due_end); ?>" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 6px;">
-        </div>
-        <div>
-            <label style="display: block; font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.4rem;">Returned From</label>
-            <input type="date" name="return_start" value="<?php echo htmlspecialchars($return_start); ?>" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 6px;">
-        </div>
-        <div>
-            <label style="display: block; font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.4rem;">Returned To</label>
-            <input type="date" name="return_end" value="<?php echo htmlspecialchars($return_end); ?>" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 6px;">
-        </div>
-        <div>
-            <label style="display: block; font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.4rem;">Status</label>
-            <select name="status" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 6px;">
-                <option value="">All Statuses</option>
-                <option value="active" <?php echo $status == 'active' ? 'selected' : ''; ?>>Active (In Progress)</option>
-                <option value="overdue" <?php echo $status == 'overdue' ? 'selected' : ''; ?>>Overdue</option>
-                <option value="returned" <?php echo $status == 'returned' ? 'selected' : ''; ?>>Returned</option>
-            </select>
-        </div>
-        <div style="display: flex; gap: 0.5rem;">
-            <button type="submit" class="btn" style="flex: 1;">Filter</button>
-            <a href="loans.php" class="btn" style="background: var(--border); color: var(--text); flex: 1; text-align: center; text-decoration: none;">Clear</a>
-        </div>
-    </form>
+    <div class="filter-header" onclick="toggleFilters('loan-filters')">
+        <h3>Filter Loans</h3>
+        <span class="filter-toggle-icon" id="toggle-icon-loan-filters" style="font-size: 1.5rem;">▼</span>
+    </div>
+    <div id="loan-filters" class="filter-content <?php echo $is_filtering ? '' : 'collapsed'; ?>">
+        <form method="GET" class="filter-grid">
+            <div class="filter-group">
+                <label>Due Date From</label>
+                <input type="date" name="due_start" value="<?php echo htmlspecialchars($due_start); ?>">
+            </div>
+            <div class="filter-group">
+                <label>Due Date To</label>
+                <input type="date" name="due_end" value="<?php echo htmlspecialchars($due_end); ?>">
+            </div>
+            <div class="filter-group">
+                <label>Returned From</label>
+                <input type="date" name="return_start" value="<?php echo htmlspecialchars($return_start); ?>">
+            </div>
+            <div class="filter-group">
+                <label>Returned To</label>
+                <input type="date" name="return_end" value="<?php echo htmlspecialchars($return_end); ?>">
+            </div>
+            <div class="filter-group">
+                <label>Status</label>
+                <select name="status">
+                    <option value="">All Statuses</option>
+                    <option value="active" <?php echo $status == 'active' ? 'selected' : ''; ?>>Active (In Progress)</option>
+                    <option value="overdue" <?php echo $status == 'overdue' ? 'selected' : ''; ?>>Overdue</option>
+                    <option value="returned" <?php echo $status == 'returned' ? 'selected' : ''; ?>>Returned</option>
+                </select>
+            </div>
+            <div class="filter-actions">
+                <button type="submit" class="btn">Filter</button>
+                <a href="loans.php" class="btn" style="background: var(--border); color: var(--fg); text-align: center; text-decoration: none;">Clear</a>
+            </div>
+        </form>
+    </div>
 </div>
+
+<script>
+function toggleFilters(id) {
+    const content = document.getElementById(id);
+    content.classList.toggle('collapsed');
+}
+</script>
 
 <div class="card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
@@ -139,15 +154,15 @@ $result = $stmt->get_result();
                         <?php endif; ?>
                     </td>
                     <td style="padding: 1rem; text-align: right;">
-                        <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                        <div style="display: flex; gap: 0.75rem; justify-content: flex-end; align-items: center;">
                             <?php if (!$loan['return_date']): ?>
                             <form action="return_loan.php" method="POST">
                                 <input type="hidden" name="loan_id" value="<?php echo $loan['loan_id']; ?>">
                                 <input type="hidden" name="book_id" value="<?php echo $loan['book_id']; ?>">
-                                <button type="submit" class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: #28a745;">Return</button>
+                                <button type="submit" class="btn-action btn-return">Return</button>
                             </form>
                             <?php endif; ?>
-                            <a href="edit_loan.php?id=<?php echo $loan['loan_id']; ?>" class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--border); color: var(--text);">Edit</a>
+                            <a href="edit_loan.php?id=<?php echo $loan['loan_id']; ?>" class="btn-action btn-edit">Edit</a>
                         </div>
                     </td>
                 </tr>

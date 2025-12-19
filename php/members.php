@@ -52,9 +52,9 @@ if ($search) {
                     <td style="padding: 1rem; opacity: 0.8;"><?php echo htmlspecialchars($member['email']); ?></td>
                     <td style="padding: 1rem; opacity: 0.8;"><?php echo htmlspecialchars($member['phone']); ?></td>
                     <td style="padding: 1rem; text-align: right;">
-                        <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                            <a href="edit_member.php?id=<?php echo $member['member_id']; ?>" class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--border); color: var(--text);">Edit</a>
-                            <a href="member_history.php?id=<?php echo $member['member_id']; ?>" class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">History</a>
+                        <div style="display: flex; gap: 0.75rem; justify-content: flex-end; align-items: center;">
+                            <a href="edit_member.php?id=<?php echo $member['member_id']; ?>" class="btn-action btn-edit">Edit</a>
+                            <a href="member_history.php?id=<?php echo $member['member_id']; ?>" class="btn-action" style="color: var(--accent);">History</a>
                         </div>
                     </td>
                 </tr>

@@ -29,10 +29,12 @@ $categories = $conn->query("SELECT * FROM categories ORDER BY category_name");
 
     <div id="add-form" style="display: none; margin-bottom: 2rem; padding: 1.5rem; border: 1px solid var(--border); border-radius: 12px;">
         <h3>Add New Category</h3>
-        <form method="POST" style="margin-top: 1rem; display: flex; gap: 1rem;">
-            <input type="text" name="name" required placeholder="Category Name" style="flex: 1; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px;">
+        <form method="POST" class="filter-grid" style="grid-template-columns: 1fr auto auto; margin-top: 1rem;">
+            <div class="filter-group">
+                <input type="text" name="name" required placeholder="Category Name">
+            </div>
             <button type="submit" class="btn">Save Category</button>
-            <button type="button" onclick="this.parentElement.parentElement.style.display='none'" class="btn" style="background: var(--border); color: var(--text);">Cancel</button>
+            <button type="button" onclick="this.parentElement.parentElement.style.display='none'" class="btn" style="background: var(--border); color: var(--fg);">Cancel</button>
         </form>
     </div>
 
@@ -42,7 +44,7 @@ $categories = $conn->query("SELECT * FROM categories ORDER BY category_name");
             <a href="category_stats.php?id=<?php echo $cat['category_id']; ?>" style="font-weight: 500; font-size: 1.1rem; color: var(--accent); text-decoration: none;"><?php echo htmlspecialchars($cat['category_name']); ?></a>
             <form action="delete_category.php" method="POST" onsubmit="return confirm('Delete this category?')">
                 <input type="hidden" name="id" value="<?php echo $cat['category_id']; ?>">
-                <button type="submit" style="background: none; border: none; color: #dc3545; cursor: pointer; font-size: 0.9rem;">Delete</button>
+                <button type="submit" class="btn-action btn-delete">Delete</button>
             </form>
         </div>
         <?php endwhile; ?>

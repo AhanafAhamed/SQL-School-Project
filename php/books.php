@@ -17,6 +17,9 @@ $author_id = $_GET['author_id'] ?? '';
 $category_id = $_GET['category_id'] ?? '';
 $stock_status = $_GET['stock_status'] ?? '';
 
+// Check if any filter is active
+$is_filtering = !empty($search) || !empty($author_id) || !empty($category_id) || !empty($stock_status);
+
 // Build dynamic query
 $query = "SELECT * FROM book_details_view WHERE 1=1";
 $params = [];
@@ -56,48 +59,60 @@ $result = $stmt->get_result();
 ?>
 
 <div class="card" style="margin-bottom: 2rem;">
-    <h3 style="margin-bottom: 1rem;">Filter Inventory</h3>
-    <form method="GET" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: end;">
-        <div>
-            <label style="display: block; font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.4rem;">Search</label>
-            <input type="text" name="search" placeholder="Title or ISBN..." value="<?php echo htmlspecialchars($search); ?>" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 6px;">
-        </div>
-        <div>
-            <label style="display: block; font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.4rem;">Author</label>
-            <select name="author_id" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 6px;">
-                <option value="">All Authors</option>
-                <?php while($a = $authors_list->fetch_assoc()): ?>
-                    <option value="<?php echo $a['author_id']; ?>" <?php echo $author_id == $a['author_id'] ? 'selected' : ''; ?>>
-                        <?php echo htmlspecialchars($a['author_name']); ?>
-                    </option>
-                <?php endwhile; ?>
-            </select>
-        </div>
-        <div>
-            <label style="display: block; font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.4rem;">Category</label>
-            <select name="category_id" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 6px;">
-                <option value="">All Categories</option>
-                <?php while($c = $categories_list->fetch_assoc()): ?>
-                    <option value="<?php echo $c['category_id']; ?>" <?php echo $category_id == $c['category_id'] ? 'selected' : ''; ?>>
-                        <?php echo htmlspecialchars($c['category_name']); ?>
-                    </option>
-                <?php endwhile; ?>
-            </select>
-        </div>
-        <div>
-            <label style="display: block; font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.4rem;">Availability</label>
-            <select name="stock_status" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 6px;">
-                <option value="">All</option>
-                <option value="in_stock" <?php echo $stock_status == 'in_stock' ? 'selected' : ''; ?>>In Stock</option>
-                <option value="out_of_stock" <?php echo $stock_status == 'out_of_stock' ? 'selected' : ''; ?>>Out of Stock</option>
-            </select>
-        </div>
-        <div style="display: flex; gap: 0.5rem;">
-            <button type="submit" class="btn" style="flex: 1;">Filter</button>
-            <a href="books.php" class="btn" style="background: var(--border); color: var(--text); flex: 1; text-align: center; text-decoration: none;">Clear</a>
-        </div>
-    </form>
+    <div class="filter-header" onclick="toggleFilters('book-filters')">
+        <h3>Filter Inventory</h3>
+        <span class="filter-toggle-icon" id="toggle-icon-book-filters" style="font-size: 1.5rem;">▼</span>
+    </div>
+    <div id="book-filters" class="filter-content <?php echo $is_filtering ? '' : 'collapsed'; ?>">
+        <form method="GET" class="filter-grid">
+            <div class="filter-group">
+                <label>Search</label>
+                <input type="text" name="search" placeholder="Title or ISBN..." value="<?php echo htmlspecialchars($search); ?>">
+            </div>
+            <div class="filter-group">
+                <label>Author</label>
+                <select name="author_id">
+                    <option value="">All Authors</option>
+                    <?php while($a = $authors_list->fetch_assoc()): ?>
+                        <option value="<?php echo $a['author_id']; ?>" <?php echo $author_id == $a['author_id'] ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($a['author_name']); ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Category</label>
+                <select name="category_id">
+                    <option value="">All Categories</option>
+                    <?php while($c = $categories_list->fetch_assoc()): ?>
+                        <option value="<?php echo $c['category_id']; ?>" <?php echo $category_id == $c['category_id'] ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($c['category_name']); ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Availability</label>
+                <select name="stock_status">
+                    <option value="">All</option>
+                    <option value="in_stock" <?php echo $stock_status == 'in_stock' ? 'selected' : ''; ?>>In Stock</option>
+                    <option value="out_of_stock" <?php echo $stock_status == 'out_of_stock' ? 'selected' : ''; ?>>Out of Stock</option>
+                </select>
+            </div>
+            <div class="filter-actions">
+                <button type="submit" class="btn">Filter</button>
+                <a href="books.php" class="btn" style="background: var(--border); color: var(--fg); text-align: center; text-decoration: none;">Clear</a>
+            </div>
+        </form>
+    </div>
 </div>
+
+<script>
+function toggleFilters(id) {
+    const content = document.getElementById(id);
+    content.classList.toggle('collapsed');
+}
+</script>
 
 <div class="card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
@@ -133,11 +148,11 @@ $result = $stmt->get_result();
                         </span>
                     </td>
                     <td style="padding: 1rem; text-align: right;">
-                        <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                            <a href="edit_book.php?id=<?php echo $book['book_id']; ?>" class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: var(--border); color: var(--text);">Edit</a>
+                        <div style="display: flex; gap: 0.75rem; justify-content: flex-end; align-items: center;">
+                            <a href="edit_book.php?id=<?php echo $book['book_id']; ?>" class="btn-action btn-edit">Edit</a>
                             <form action="delete_book.php" method="POST" onsubmit="return confirm('Are you sure?')">
                                 <input type="hidden" name="id" value="<?php echo $book['book_id']; ?>">
-                                <button type="submit" class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: #dc3545;">Delete</button>
+                                <button type="submit" class="btn-action btn-delete">Delete</button>
                             </form>
                         </div>
                     </td>
