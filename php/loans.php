@@ -11,6 +11,8 @@ if (!isset($_SESSION['staff_id'])) {
 $today = date('Y-m-d');
 
 // Filter parameters
+$loan_start = $_GET['loan_start'] ?? '';
+$loan_end = $_GET['loan_end'] ?? '';
 $due_start = $_GET['due_start'] ?? '';
 $due_end = $_GET['due_end'] ?? '';
 $return_start = $_GET['return_start'] ?? '';
@@ -18,12 +20,23 @@ $return_end = $_GET['return_end'] ?? '';
 $status = $_GET['status'] ?? '';
 
 // Check if any filter is active
-$is_filtering = !empty($due_start) || !empty($due_end) || !empty($return_start) || !empty($return_end) || !empty($status);
+$is_filtering = !empty($loan_start) || !empty($loan_end) || !empty($due_start) || !empty($due_end) || !empty($return_start) || !empty($return_end) || !empty($status);
 
 // Build dynamic query
 $query = "SELECT * FROM loan_details_view WHERE 1=1";
 $params = [];
 $types = "";
+
+if ($loan_start) {
+    $query .= " AND loan_date >= ?";
+    $params[] = $loan_start;
+    $types .= "s";
+}
+if ($loan_end) {
+    $query .= " AND loan_date <= ?";
+    $params[] = $loan_end;
+    $types .= "s";
+}
 
 if ($due_start) {
     $query .= " AND due_date >= ?";
@@ -75,6 +88,14 @@ $result = $stmt->get_result();
     </div>
     <div id="loan-filters" class="filter-content <?php echo $is_filtering ? '' : 'collapsed'; ?>">
         <form method="GET" class="filter-grid">
+            <div class="filter-group">
+                <label>Loan Date From</label>
+                <input type="date" name="loan_start" value="<?php echo htmlspecialchars($loan_start); ?>">
+            </div>
+            <div class="filter-group">
+                <label>Loan Date To</label>
+                <input type="date" name="loan_end" value="<?php echo htmlspecialchars($loan_end); ?>">
+            </div>
             <div class="filter-group">
                 <label>Due Date From</label>
                 <input type="date" name="due_start" value="<?php echo htmlspecialchars($due_start); ?>">

@@ -51,11 +51,17 @@ if ($stock_status === 'in_stock') {
 $query .= " ORDER BY title ASC";
 
 $stmt = $conn->prepare($query);
+if (!$stmt) {
+    die("Error preparing statement: " . $conn->error . " (Query: $query)");
+}
 if ($types) {
     $stmt->bind_param($types, ...$params);
 }
 $stmt->execute();
 $result = $stmt->get_result();
+if (!$result) {
+    die("Error getting result: " . $stmt->error);
+}
 ?>
 
 <div class="card" style="margin-bottom: 2rem;">
