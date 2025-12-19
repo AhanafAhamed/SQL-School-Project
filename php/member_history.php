@@ -33,7 +33,7 @@ $stmt->bind_param("s", $id);
 $stmt->execute();
 $history = $stmt->get_result();
 
-// Stats
+
 $active_loans = 0;
 $total_loans = $history->num_rows;
 $history_rows = [];

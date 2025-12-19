@@ -8,12 +8,12 @@ if (!isset($_SESSION['staff_id'])) {
     exit();
 }
 
-// Aggregate stats
+
 $book_count = $conn->query("SELECT COUNT(*) FROM books")->fetch_row()[0];
 $member_count = $conn->query("SELECT COUNT(*) FROM members")->fetch_row()[0];
 $loan_count = $conn->query("SELECT COUNT(*) FROM loans WHERE return_date IS NULL")->fetch_row()[0];
 
-// Popular books
+
 $popular_books_query = "
     SELECT b.title, COUNT(l.loan_id) as loan_count
     FROM books b

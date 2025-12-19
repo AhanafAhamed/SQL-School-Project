@@ -3,10 +3,10 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 require_once __DIR__ . '/config.php';
-require_once __DIR__ . '/db.php'; // Ensure DB connection is available
+require_once __DIR__ . '/db.php'; 
 
-// Global Session Validation: If staff is logged in, verify they still exist in DB
-// (Protects against session mismatch after DB resets/re-seeds)
+
+
 if (isset($_SESSION['staff_id'])) {
     $sid = $_SESSION['staff_id'];
     $check_stmt = $conn->prepare("SELECT staff_id FROM staff WHERE staff_id = ?");

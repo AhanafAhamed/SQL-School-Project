@@ -19,19 +19,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $conn->begin_transaction();
     try {
-        // Check availability
+        
         $check_stmt = $conn->prepare("SELECT total_available FROM books WHERE book_id = ?");
         $check_stmt->bind_param("s", $book_id);
         $check_stmt->execute();
         $book = $check_stmt->get_result()->fetch_assoc();
 
         if ($book && $book['total_available'] > 0) {
-            // Insert loan
+            
             $stmt = $conn->prepare("INSERT INTO loans (loan_id, book_id, member_id, staff_id, loan_date, due_date) VALUES (?, ?, ?, ?, ?, ?)");
             $stmt->bind_param("ssssss", $loan_id, $book_id, $member_id, $staff_id, $loan_date, $due_date);
             $stmt->execute();
 
-            // Update inventory
+            
             $update_stmt = $conn->prepare("UPDATE books SET total_available = total_available - 1, total_loaned = total_loaned + 1 WHERE book_id = ?");
             $update_stmt->bind_param("s", $book_id);
             $update_stmt->execute();

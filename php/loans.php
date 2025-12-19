@@ -10,7 +10,7 @@ if (!isset($_SESSION['staff_id'])) {
 
 $today = date('Y-m-d');
 
-// Filter parameters
+
 $loan_start = $_GET['loan_start'] ?? '';
 $loan_end = $_GET['loan_end'] ?? '';
 $due_start = $_GET['due_start'] ?? '';
@@ -19,10 +19,10 @@ $return_start = $_GET['return_start'] ?? '';
 $return_end = $_GET['return_end'] ?? '';
 $status = $_GET['status'] ?? '';
 
-// Check if any filter is active
+
 $is_filtering = !empty($loan_start) || !empty($loan_end) || !empty($due_start) || !empty($due_end) || !empty($return_start) || !empty($return_end) || !empty($status);
 
-// Build dynamic query
+
 $query = "SELECT * FROM loan_details_view WHERE 1=1";
 $params = [];
 $types = "";

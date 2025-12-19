@@ -1,14 +1,14 @@
 <?php
-// Database configuration
+
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_NAME', 'library_db');
 
-// App configuration
+
 define('APP_NAME', 'Library Management System');
 
-// Custom error handler to redirect errors to console
+
 function console_error_handler($errno, $errstr, $errfile, $errline) {
     $type = 'log';
     switch ($errno) {
@@ -36,7 +36,7 @@ function console_error_handler($errno, $errstr, $errfile, $errline) {
     $message = "PHP $type: $errstr in $errfile on line $errline";
     $message = addslashes($message);
     echo "<script>console.$type(\"$message\");</script>";
-    return true; // Don't execute PHP internal error handler
+    return true; 
 }
 
 function console_exception_handler($exception) {

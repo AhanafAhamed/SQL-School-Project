@@ -8,7 +8,7 @@ if (!isset($_SESSION['staff_id'])) {
     exit();
 }
 
-// Fetch authors and categories for filters
+
 $authors_list = $conn->query("SELECT * FROM authors ORDER BY author_name");
 $categories_list = $conn->query("SELECT * FROM categories ORDER BY category_name");
 
@@ -17,10 +17,10 @@ $author_id = $_GET['author_id'] ?? '';
 $category_id = $_GET['category_id'] ?? '';
 $stock_status = $_GET['stock_status'] ?? '';
 
-// Check if any filter is active
+
 $is_filtering = !empty($search) || !empty($author_id) || !empty($category_id) || !empty($stock_status);
 
-// Build dynamic query
+
 $query = "SELECT * FROM book_details_view WHERE 1=1";
 $params = [];
 $types = "";

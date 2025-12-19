@@ -8,7 +8,7 @@ function get_db_connection() {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    // Create database if it doesn't exist
+    
     $conn->query("CREATE DATABASE IF NOT EXISTS " . DB_NAME);
     $conn->select_db(DB_NAME);
 

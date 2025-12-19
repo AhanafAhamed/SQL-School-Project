@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stock = $_POST['total_stock'];
 
     if ($id) {
-        // Update existing
+        
         $old_stock = $book['total_stock'];
         $active_loans = $old_stock - $book['total_available'];
         $new_available = $stock - $active_loans;
@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->execute();
         $_SESSION['flash'] = ["Book updated!"];
     } else {
-        // Insert new
+        
         $new_id = substr(uniqid(), -8);
         $stmt = $conn->prepare("INSERT INTO books (book_id, title, category_id, author_id, published_year, isbn, total_stock, total_available) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("ssssssii", $new_id, $title, $cat_id, $auth_id, $year, $isbn, $stock, $stock);

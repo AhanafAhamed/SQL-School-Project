@@ -13,7 +13,7 @@ if (!$category_id) {
     exit();
 }
 
-// Fetch Category Name
+
 $stmt = $conn->prepare("SELECT category_name FROM categories WHERE category_id = ?");
 $stmt->bind_param("s", $category_id);
 $stmt->execute();

@@ -2,7 +2,7 @@
 require_once 'includes/db.php';
 require_once 'includes/config.php';
 
-// --- PROGRESS BAR INITIALIZATION ---
+
 if (ob_get_level() == 0) ob_start();
 ?>
 <!DOCTYPE html>
@@ -43,10 +43,10 @@ function updateProgress($percent, $msg, $log = null, $is_error = false) {
 updateProgress(0, "Starting initialization...", "Session started.");
 
 try {
-    // 1. Initialize SQL buffer
+    
     $sql_script = "SET FOREIGN_KEY_CHECKS=0;\n";
 
-    // DROP existing tables if requested
+    
     if (isset($_GET['drop']) && $_GET['drop'] == 'true') {
         updateProgress(5, "Dropping existing tables...", "Checking for old data...");
         $r = $conn->query("SELECT table_name FROM information_schema.tables WHERE table_schema = 'library_db'");
@@ -57,7 +57,7 @@ try {
 
     updateProgress(10, "Preparing table definitions...", "Schema generation...");
 
-    // 1. Create Tables
+    
     $tables = [
         "CREATE TABLE IF NOT EXISTS authors (
             author_id VARCHAR(8) PRIMARY KEY,
@@ -109,7 +109,7 @@ try {
 
     foreach ($tables as $sql) $sql_script .= $sql . "\n";
 
-    // 2. Create Views
+    
     $views = [
         "DROP VIEW IF EXISTS overdue_books;",
         "CREATE VIEW overdue_books AS
@@ -141,10 +141,10 @@ try {
 
     updateProgress(15, "Generating staff accounts...", "Creating Admin and Librarian accounts.");
 
-    // 3. Data Seeding
+    
     $sql_script .= "START TRANSACTION;\n";
 
-    // Staff
+    
     $admin_id = substr(md5(uniqid(mt_rand(), true)), 0, 8);
     $admin_pass = password_hash('admin123', PASSWORD_DEFAULT);
     $sql_script .= "INSERT INTO staff (staff_id, name, username, password, role) VALUES ('$admin_id', 'Admin', 'admin', '$admin_pass', 'Admin');\n";
@@ -156,7 +156,7 @@ try {
 
     updateProgress(20, "Seeding categories and authors...", "Populating metadata.");
 
-    // Categories
+    
     $cat_names = ["Fiction", "Non-Fiction", "Science", "History", "Technology", "Biography", "Fantasy", "Mystery", "Romance", "Self-Help"];
     $category_ids = [];
     foreach ($cat_names as $name) {
@@ -165,7 +165,7 @@ try {
         $category_ids[] = $id;
     }
 
-    // Authors
+    
     $author_ids = [];
     for($i=1; $i<=50; $i++) {
         $id = substr(md5(uniqid(mt_rand(), true)), 0, 8);
@@ -176,7 +176,7 @@ try {
 
     updateProgress(25, "Seeding members...", "200 members generated.");
 
-    // Members
+    
     $member_ids = [];
     for($i=1; $i<=200; $i++) {
         $id = substr(md5(uniqid(mt_rand(), true)), 0, 8);
@@ -187,7 +187,7 @@ try {
         $member_ids[] = $id;
     }
 
-    // Books
+    
     updateProgress(30, "Generating books (2500 total)...", "Please wait...");
     $book_titles = ["The Silent", "Echoes of", "Rising", "Lost in", "Secrets of", "Midnight", "Journey to", "Eternal", "Shadows", "Beyond the"];
     $book_nouns = ["Ocean", "Forest", "Empire", "Time", "Desert", "City", "Galaxy", "Soul", "Heart", "Legacy"];
@@ -206,7 +206,7 @@ try {
         $sql_script .= "INSERT INTO books (book_id, title, category_id, author_id, published_year, isbn, total_stock, total_available) VALUES ('$id', '".addslashes($title)."', '$cat_id', '$auth_id', $year, '$isbn', $stock, $stock);\n";
         $book_ids[] = $id;
 
-        // Pick 5 random books to deplete later
+        
         if (count($out_of_stock_targets) < 5 && mt_rand(1, 100) > 95) {
             $out_of_stock_targets[] = ['id' => $id, 'stock' => $stock, 'title' => $title];
         }
@@ -217,7 +217,7 @@ try {
         }
     }
 
-    // Loans
+    
     updateProgress(60, "Generating loans (1500 total)...", "Simulating library history.");
     for($i=1; $i<=1500; $i++) {
         $book_id = $book_ids[array_rand($book_ids)];
@@ -244,7 +244,7 @@ try {
         }
     }
 
-    // Deplete targets for "Out of Stock" demo
+    
     updateProgress(85, "Depleting target books...", "Making 5 books out of stock.");
     foreach ($out_of_stock_targets as $target) {
         for ($j = 0; $j < $target['stock']; $j++) {
@@ -263,11 +263,11 @@ try {
     $sql_script .= "COMMIT;\n";
     $sql_script .= "SET FOREIGN_KEY_CHECKS=1;\n";
 
-    // 4. Save to file
+    
     updateProgress(90, "Finalizing SQL script...", "Writing to database.sql file.");
     file_put_contents('database.sql', $sql_script);
 
-    // 5. Execute SQL
+    
     updateProgress(95, "Executing SQL Script...", "Sending multi-query to MySQL server. Please wait...");
     if ($conn->multi_query($sql_script)) {
         do {

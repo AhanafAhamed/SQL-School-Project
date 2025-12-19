@@ -13,7 +13,7 @@ if (!$author_id) {
     exit();
 }
 
-// Fetch Author Name
+
 $stmt = $conn->prepare("SELECT author_name FROM authors WHERE author_id = ?");
 $stmt->bind_param("s", $author_id);
 $stmt->execute();
@@ -27,13 +27,13 @@ if (!$author) {
 $pageTitle = $author['author_name'] . " Stats";
 require_once 'includes/header.php';
 
-// 1. Published books
+
 $stmt = $conn->prepare("SELECT COUNT(*) as book_count FROM books WHERE author_id = ?");
 $stmt->bind_param("s", $author_id);
 $stmt->execute();
 $published_books = $stmt->get_result()->fetch_assoc()['book_count'];
 
-// 1b. Unloaned books count
+
 $stmt = $conn->prepare("
     SELECT COUNT(*) as unloaned_count 
     FROM books b 
@@ -44,7 +44,7 @@ $stmt->bind_param("s", $author_id);
 $stmt->execute();
 $unloaned_books = $stmt->get_result()->fetch_assoc()['unloaned_count'];
 
-// 2. Most published genre(s)
+
 $genres = [];
 if ($published_books > 0) {
     $stmt = $conn->prepare("
@@ -66,7 +66,7 @@ if ($published_books > 0) {
     while($row = $genres_res->fetch_assoc()) $genres[] = $row['category_name'];
 }
 
-// 3. Total loans
+
 $stmt = $conn->prepare("
     SELECT COUNT(l.loan_id) as total_loans
     FROM loans l
@@ -77,10 +77,10 @@ $stmt->bind_param("s", $author_id);
 $stmt->execute();
 $total_loans = $stmt->get_result()->fetch_assoc()['total_loans'];
 
-// 4. Avg loans per book
+
 $avg_loans_per_book = $published_books > 0 ? $total_loans / $published_books : 0;
 
-// 5. Avg loans per member (amongst those who have loaned author's book)
+
 $stmt = $conn->prepare("
     SELECT COUNT(DISTINCT l.member_id) as member_count
     FROM loans l
@@ -92,7 +92,7 @@ $stmt->execute();
 $unique_members = $stmt->get_result()->fetch_assoc()['member_count'];
 $avg_loans_per_member = $unique_members > 0 ? $total_loans / $unique_members : 0;
 
-// 6. Max loans (Must have been borrowed at least once)
+
 $stmt = $conn->prepare("
     SELECT b.title, b.isbn, COUNT(l.loan_id) as loan_count
     FROM books b
@@ -106,7 +106,7 @@ $stmt->bind_param("s", $author_id);
 $stmt->execute();
 $max_loaned_book = $stmt->get_result()->fetch_assoc();
 
-// 7. Min loans (Must have been borrowed at least once)
+
 $stmt = $conn->prepare("
     SELECT b.title, b.isbn, COUNT(l.loan_id) as loan_count
     FROM books b
