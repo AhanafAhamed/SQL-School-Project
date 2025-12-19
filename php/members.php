@@ -9,16 +9,27 @@ if (!isset($_SESSION['staff_id'])) {
 }
 
 $search = isset($_GET['search']) ? $_GET['search'] : '';
-$query = "SELECT * FROM members";
+$today = date('Y-m-d');
+
+$query = "SELECT m.*,
+    COUNT(l.loan_id) as total_borrowed,
+    SUM(CASE WHEN l.return_date IS NULL AND l.due_date >= ? THEN 1 ELSE 0 END) as active_borrowed,
+    SUM(CASE WHEN l.return_date IS NULL AND l.due_date < ? THEN 1 ELSE 0 END) as overdue_borrowed,
+    SUM(CASE WHEN l.return_date IS NOT NULL THEN 1 ELSE 0 END) as returned
+    FROM members m
+    LEFT JOIN loans l ON m.member_id = l.member_id";
 
 if ($search) {
     $search_param = "%$search%";
-    $stmt = $conn->prepare("$query WHERE member_name LIKE ? OR email LIKE ?");
-    $stmt->bind_param("ss", $search_param, $search_param);
+    $stmt = $conn->prepare("$query WHERE m.member_name LIKE ? OR m.email LIKE ? GROUP BY m.member_id ORDER BY m.member_name");
+    $stmt->bind_param("ssss", $today, $today, $search_param, $search_param);
     $stmt->execute();
     $result = $stmt->get_result();
 } else {
-    $result = $conn->query($query);
+    $stmt = $conn->prepare("$query GROUP BY m.member_id ORDER BY m.member_name");
+    $stmt->bind_param("ss", $today, $today);
+    $stmt->execute();
+    $result = $stmt->get_result();
 }
 ?>
 
@@ -40,6 +51,10 @@ if ($search) {
                     <th style="padding: 1rem;">Name</th>
                     <th style="padding: 1rem;">Email</th>
                     <th style="padding: 1rem;">Phone</th>
+                    <th style="padding: 1rem; text-align: center;">Total</th>
+                    <th style="padding: 1rem; text-align: center;">Active</th>
+                    <th style="padding: 1rem; text-align: center;">Overdue</th>
+                    <th style="padding: 1rem; text-align: center;">Returned</th>
                     <th style="padding: 1rem; text-align: right;">Actions</th>
                 </tr>
             </thead>
@@ -51,6 +66,18 @@ if ($search) {
                     </td>
                     <td style="padding: 1rem; opacity: 0.8;"><?php echo htmlspecialchars($member['email']); ?></td>
                     <td style="padding: 1rem; opacity: 0.8;"><?php echo htmlspecialchars($member['phone']); ?></td>
+                    <td style="padding: 1rem; text-align: center; font-weight: 500;"><?php echo $member['total_borrowed']; ?></td>
+                    <td style="padding: 1rem; text-align: center;">
+                        <span style="padding: 0.25rem 0.5rem; border-radius: 4px; background: #d1ecf1; color: #0c5460; font-size: 0.85rem;"><?php echo $member['active_borrowed']; ?></span>
+                    </td>
+                    <td style="padding: 1rem; text-align: center;">
+                        <?php if ($member['overdue_borrowed'] > 0): ?>
+                            <span style="padding: 0.25rem 0.5rem; border-radius: 4px; background: #f8d7da; color: #721c24; font-size: 0.85rem;"><?php echo $member['overdue_borrowed']; ?></span>
+                        <?php else: ?>
+                            <span style="opacity: 0.5;">0</span>
+                        <?php endif; ?>
+                    </td>
+                    <td style="padding: 1rem; text-align: center; opacity: 0.7;"><?php echo $member['returned']; ?></td>
                     <td style="padding: 1rem; text-align: right;">
                         <div style="display: flex; gap: 0.75rem; justify-content: flex-end; align-items: center;">
                             <a href="edit_member.php?id=<?php echo $member['member_id']; ?>" class="btn-action btn-edit">Edit</a>
