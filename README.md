@@ -14,54 +14,32 @@ A minimalistic, fully functional Library Management System built with Flask and 
 
 ## Tech Stack
 
-- **Backend**: Python, Flask, SQLAlchemy (SQLite)
-- **Frontend**: HTML5, CSS3 (Vanilla), Jinja2
+- **Backend**: PHP, MySQL
+- **Frontend**: HTML5, CSS3 (Vanilla), JS
 
-## Installation
+## Installation (Create a Symbolic Link)
 
-1. **Clone the repository**:
-   ```bash
-   git clone <repository-url>
-   cd Ahnf
-   ```
+Creates a "virtual shortcut" in your `xampp\htdocs\library` folder that points to your project.
 
-2. **Install dependencies**:
-   ```bash
-   pip install -r py/requirements.txt
-   ```
-
-## Running the Application
-
-1. **Start the server**:
-   ```bash
-   python py/app.py
-   ```
-
-2. **Access the app**:
-   Open your browser and navigate to `http://127.0.0.1:5000`.
+1.  Open **Command Prompt** as **Administrator**.
+2.  Run the following command:
+    ```cmd
+    mklink /D "C:\xampp\htdocs\library" "<your folders>\SQL-School-Project\php"
+    ```
+3.  Now you can access the project at: `http://localhost/library`
 
 ## Default Credentials
 
 The system comes with a pre-seeded admin account for initial setup:
 
-| Username | Password   |
-| -------- | ---------- |
-| `admin`  | `admin123` |
+| Role  | Username | Password   |
+| ----- | -------- | ---------- |
+| Admin | `admin`  | `admin123` |
+| Staff | `alice`  | `staff123` |
 
 ## Project Structure
-
-- `py/`: Python code directory.
-- `py/app.py`: Main Flask application entry point.
-- `py/models.py`: Database models.
-- `py/routes.py`: Flask routes and views.
-- `py/extensions.py`: Flask extensions.
-- `py/fill.py`: Database seeder.
-- `Commons/`: Shared frontend assets (`base.css`, `base.html`).
-- `templates/`: Page-specific HTML templates used to render the UI.
-- `py/library.db`: SQLite database (generated on first run).
+Entire code is self contained in the `php` folder.
 
 ER diagram: 
 ![ER Diagram](Docs/ER.png)
-
-Flowchart: 
 

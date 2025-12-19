@@ -1,0 +1,61 @@
+Database Management Systems Final Project Requirements
+You are required to design and implement a data-driven application that integrates
+a MySQL database with a front-end interface (can be web-based or
+desktop-based) to simulate a real-world system. The primary focus must be on
+effective use of SQL as taught throughout the course.
+Core Project Requirements
+Your project must include the following:
+1. SQL Database Design & Integration
+○ Use MySQL as the backend database.
+○ Include at least 5 interrelated tables with proper normalization.
+○ Demonstrate:
+■ Primary keys, Foreign keys
+■ Appropriate data types
+■ Constraints (e.g., NOT NULL, UNIQUE, DEFAULT, CHECK)
+2. Front-End Interface (Any technology: PHP, HTML/CSS, JS etc.)
+○ Must have forms/pages to:
+■ Add, edit, and delete records.
+■ View/search/filter results.
+○ Front-end should be connected to the database via SQL queries.
+○ Web or Desktop GUI is acceptable (PHP, Java, Python Tkinter, etc.)
+3. SQL Features Implementation
+○ Basic Operations
+■ Creating tables
+■ Inserting rows
+■ Updating and deleting data
+■ Retrieving data using SELECT with aliases and expressions
+○ Query Features
+■ Use of WHERE, ORDER BY, LIMIT
+■ Logical operators (AND, OR, NOT)
+■ Pattern matching with LIKE
+■ IS NULL, DISTINCT
+○ Joins & Multi-table Queries
+■ Atleast:
+1. One INNER JOIN
+2. One LEFT JOIN or RIGHT JOIN
+3. One JOIN involving 3 or more tables
+○ Group Functions & Aggregates
+■ Use of COUNT(), SUM(), AVG(), MIN(), MAX()
+■ GROUP BY and HAVING clauses
+○ Subqueries
+■ One single-row subquery
+■ One multiple-row subquery with IN, ANY, or ALL
+○ Views
+■ Create at least one VIEW to simplify data retrieval
+○ User Access Control
+■ Create at least one custom user
+■ Grant object-level privileges (e.g., SELECT, INSERT) using
+GRANT
+■ Use WITH GRANT OPTION or PUBLIC as appropriate
+Minimum Deliverables
+1. SQL Scripts (.sql file(s) containing):
+● Table creation scripts, Data insertion, View creation
+& User and privilege creation
+2. Application Source Code
+● Complete code with clear comments, showing how SQL queries are
+executed from the application
+3. Sample Database
+● A .sql dump of your final database (with data)
+4. Screenshots
+● GUI showcasing data insertion, search, display, updates
+5. Project Report
