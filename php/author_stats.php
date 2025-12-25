@@ -68,6 +68,27 @@ if ($published_books > 0) {
 
 
 $stmt = $conn->prepare("
+    SELECT AVG(loan_count) as avg_loans
+    FROM (
+        SELECT b.book_id, COUNT(l.loan_id) as loan_count
+        FROM books b
+        LEFT JOIN loans l ON b.book_id = l.book_id
+        WHERE b.author_id = ?
+        GROUP BY b.book_id
+    ) as book_loans
+");
+$stmt->bind_param("s", $author_id);
+$stmt->execute();
+$avg_loans_per_book = $stmt->get_result()->fetch_assoc()['avg_loans'] ?? 0;
+
+
+$stmt = $conn->prepare("SELECT MIN(published_year) as earliest_year FROM books WHERE author_id = ? AND published_year > 0");
+$stmt->bind_param("s", $author_id);
+$stmt->execute();
+$earliest_year = $stmt->get_result()->fetch_assoc()['earliest_year'];
+
+
+$stmt = $conn->prepare("
     SELECT COUNT(l.loan_id) as total_loans
     FROM loans l
     JOIN books b ON l.book_id = b.book_id
@@ -75,10 +96,7 @@ $stmt = $conn->prepare("
 ");
 $stmt->bind_param("s", $author_id);
 $stmt->execute();
-$total_loans = $stmt->get_result()->fetch_assoc()['total_loans'];
-
-
-$avg_loans_per_book = $published_books > 0 ? $total_loans / $published_books : 0;
+$total_loans = $stmt->get_result()->fetch_assoc()['total_loans'] ?? 0;
 
 
 $stmt = $conn->prepare("
@@ -153,6 +171,7 @@ $min_loaned_book = $stmt->get_result()->fetch_assoc();
             <h3>Engagement Metrics</h3>
             <div style="margin-top: 1rem;">
                 <p><strong>Avg Loans per Book:</strong> <?php echo number_format($avg_loans_per_book, 2); ?></p>
+                <p><strong>Earliest Publication:</strong> <?php echo $earliest_year ? $earliest_year : 'N/A'; ?></p>
                 <p><strong>Avg Loans per Member:</strong> <?php echo number_format($avg_loans_per_member, 2); ?></p>
                 <p style="font-size: 0.85rem; opacity: 0.6;">(Members who loaned author: <?php echo $unique_members; ?>)</p>
             </div>

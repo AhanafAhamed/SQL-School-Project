@@ -33,15 +33,18 @@ $stmt->execute();
 $total_books = $stmt->get_result()->fetch_assoc()['book_count'];
 
 $stmt = $conn->prepare("
-    SELECT COUNT(l.loan_id) as total_loans
-    FROM loans l
-    JOIN books b ON l.book_id = b.book_id
-    WHERE b.category_id = ?
+    SELECT AVG(loan_count) as avg_loans
+    FROM (
+        SELECT b.book_id, COUNT(l.loan_id) as loan_count
+        FROM books b
+        LEFT JOIN loans l ON b.book_id = l.book_id
+        WHERE b.category_id = ?
+        GROUP BY b.book_id
+    ) as book_loans
 ");
 $stmt->bind_param("s", $category_id);
 $stmt->execute();
-$total_loans = $stmt->get_result()->fetch_assoc()['total_loans'];
-$avg_loans = $total_books > 0 ? $total_loans / $total_books : 0;
+$avg_loans = $stmt->get_result()->fetch_assoc()['avg_loans'] ?? 0;
 
 $stmt = $conn->prepare("
     SELECT a.author_name, COUNT(b.book_id) as book_count
